@@ -17,12 +17,10 @@ app.use(express.urlencoded({extended: true}))
 app.use(cookieParser())
 
 const userRouter = require('./routes/userRoutes.js')
-const projectRouter = require('./routes/projectRoutes.js')
 const participantRouter = require('./routes/participantRoutes.js')
 
 
 app.use('/user', userRouter)
-app.use('/project', projectRouter)
 app.use('/participant', participantRouter)
 
 

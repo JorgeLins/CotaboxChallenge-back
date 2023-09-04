@@ -3,24 +3,29 @@ const prisma = require('../config/prisma.js')
 exports.createParticipant = async(req, res, next) => {
 
     try {
-        const {firstName, lastName, participation, projectId} = req.body 
+        const {firstName, lastName, participation, ownerId} = req.body 
+
+        if(!firstName || !lastName || !participation) {
+            return res.status(400).send({ error: "Por favor, preencha todos os campos." });
+        }
+
 
         const participant = await prisma.participant.create({
             data:{
                 firstName, 
                 lastName, 
                 participation,
-                project:{
+                owner:{
                     connect:{
-                        id: projectId
+                        id: ownerId
                     }
                 }
             }
         })
 
-        res.json(participant)
+        res.status(200).json(participant)
     } catch (error) {
-        res.json({error: error})
+        return res.status(500).send({ error: "Ocorreu um erro ao processar sua solicitação. Verifique o serviço" });
     }
 
 }
@@ -42,9 +47,9 @@ exports.updateParticipant = async(req, res, next) => {
             }
         })
 
-        res.json(updatedParticipant)
+        res.status(200).json(updatedParticipant)
     } catch (error) {
-        res.json({error: 'participante não encontrado'})
+       return res.status(404).json({error: 'Particiante não encontrado'})
     }
 
  
@@ -60,9 +65,26 @@ exports.deleteParticipant = async(req, res, next) =>{
             }
         })
 
-        res.json({mensagem: 'participante deletado com sucesso'})
+        res.status(200).json({mensagem: 'Particiante deletado com sucesso'})
     } catch (error) {
-        res.json({error: 'participante não encontrado'})
+       return res.status(404).json({error: 'Particiante não encontrado'})
+    }
+}
+
+exports.getParticipantsByProject = async(req, res)=>{
+
+    const {id} = req.params;
+
+    try {
+        const allParticipants = await prisma.participant.findMany({
+            where:{
+                ownerId: id
+            }
+        })
+
+        res.status(200).json(allParticipants)
+    } catch (error) {
+       return res.status(404).json({error: 'Nenhum Particiante encontrado'})
     }
 }
 
@@ -70,8 +92,8 @@ exports.getAllParticipants = async(req, res)=>{
     try {
         const allParticipants = await prisma.participant.findMany()
 
-        res.json(allParticipants)
+        res.status(200).json(allParticipants)
     } catch (error) {
-        res.json({error: 'Nenhum participante encontrado'})
+       return res.status(404).json({error: 'Nenhum Particiante encontrado'})
     }
 }
