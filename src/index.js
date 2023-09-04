@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser')
 require('dotenv').config()
 const app = express()
 
-
+//teste
 const prisma = new PrismaClient()
 const cors = require('cors');
 
