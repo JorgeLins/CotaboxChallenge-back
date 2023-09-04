@@ -3,7 +3,7 @@ const express = require('express')
 const cookieParser = require('cookie-parser')
 require('dotenv').config()
 const app = express()
-const port = 3001
+
 
 const prisma = new PrismaClient()
 const cors = require('cors');
@@ -24,8 +24,8 @@ app.use('/user', userRouter)
 app.use('/participant', participantRouter)
 
 
-app.listen(port, () => {
+app.listen(process.env.PORT, () => {
 
   console.log()
-  console.log(`Iniciado na porta ${port}`)
+  console.log(`Iniciado na porta ${process.env.PORT}`)
 })
